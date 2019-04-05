@@ -190,18 +190,31 @@ class rosterParser():
                     rawIndex += 1
 
         dutyDateSet = set()
-        
+
+        firstDateStr = self.startDate + self.startMonth + self.startYear
+        LastDateStr = self.endDate + self.endMonth + self.endYear
+        firstDate = datetime.strptime(firstDateStr, '%d%m%Y').date()
+        LastDate = datetime.strptime(LastDateStr, '%d%m%Y').date()
+        startDate = None
+        endDate = None
+
         # Add 'OFF' events in empty days
         for index, row in excelFrame.iterrows():
-            startDate = datetime.strptime(row['Start Date'], '%d/%m/%Y').date()
-            endDate = datetime.strptime(row['End Date'], '%d/%m/%Y').date()
+            try:
+                startDate = datetime.strptime(row['Start Date'], '%d/%m/%Y').date()
+                endDate = datetime.strptime(row['End Date'], '%d/%m/%Y').date()
+            except TypeError as e:
+                print(e)
+                if not startDate:
+                    startDate = firstDate
+                if not endDate:
+                    endDate = LastDate
+
             for singleDate in rrule(DAILY, dtstart=startDate, until=endDate):
                 dutyDateSet.add(singleDate)
 
-        startDateStr = self.startDate + self.startMonth + self.startYear
-        endDateStr = self.endDate + self.endMonth + self.endYear
-        startDate = datetime.strptime(startDateStr, '%d%m%Y').date()
-        endDate = datetime.strptime(endDateStr, '%d%m%Y').date()
+        startDate = datetime.strptime(firstDateStr, '%d%m%Y').date()
+        endDate = datetime.strptime(LastDateStr, '%d%m%Y').date()
 
         for singleDate in rrule(DAILY, dtstart=startDate, until=endDate):
             if singleDate not in dutyDateSet:
@@ -214,6 +227,7 @@ class rosterParser():
                 excelFrame.at[rawIndex, 'Description']   = 'OFF' 
                 rawIndex += 1
     
+        excelFrame.dropna(inplace = True)
         return excelFrame
 
     def saveToFile(self, excelFrame, rosterList):
