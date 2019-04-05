@@ -10,7 +10,7 @@ import pandas as pd
 from bs4 import BeautifulSoup
 
 class rosterParser():
-    def __init__(self, username, password, startDate, endDate):
+    def __init__(self, username, password, startDate, endDate, outFile):
         self.username = username
         self.password = password
 
@@ -21,6 +21,8 @@ class rosterParser():
         self.startYear = self.format2DightTimeStr(startDate.year)
         self.endYear = self.format2DightTimeStr(endDate.year)
         
+        self.outFile = outFile
+
         self.loginUrl = "http://tpeweb02.china-airlines.com/cia/LoginHandler"
         self.rosterUrl = "http://tpeweb02.china-airlines.com/cia/cia_inq_view_rostreport.jsp?" + \
                             "strDay=" + self.startDate + "&strMonth=" + self.startMonth + "&strYear=" + self.startYear + \
@@ -215,8 +217,8 @@ class rosterParser():
         return excelFrame
 
     def saveToFile(self, excelFrame, rosterList):
-        excelFrame.to_csv('roster.csv', index=False)
-        with open('roster.json', 'w') as outfile:
+        excelFrame.to_csv(self.outFile + '.csv', index=False)
+        with open(self.outFile + '.json', 'w') as outfile:
             json.dump(rosterList, outfile)
             
     def convertToJson(self, excelFrame):

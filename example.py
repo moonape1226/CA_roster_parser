@@ -5,7 +5,7 @@ from datetime import date
 if __name__ == '__main__':
     startDate = date(2018, 12, 1)
     endDate = date(2018, 12, 31)
-    parser = ca_roster_parser.rosterParser("account", "password", startDate, endDate)
+    parser = ca_roster_parser.rosterParser("account", "password", startDate, endDate, "roster")
     
     rosterQueryResult = parser.sendRosterRequest()
 
