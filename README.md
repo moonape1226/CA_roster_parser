@@ -8,3 +8,15 @@ $ python3 example.py
 .jon file can be used for google calender API
 
 Any comment is welsome and hope you enjoy it!
+
+
+### Run in debug mode
+```sh
+cd src; FLASK_APP=server.py FLASK_DEBUG=1 python -m flask run
+```
+
+
+### Run in server mode
+```sh
+cd src; FLASK_APP=server.py python -m flask run
+```
