@@ -1,3 +1,4 @@
 roster.csv
 roster.json
 .DS_Store
+src/__pycache__/
